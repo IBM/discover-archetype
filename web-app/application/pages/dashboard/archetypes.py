@@ -60,11 +60,13 @@ class Archetypes:
 archetypes_dic = {}
 
 
-def archetypes(typ='entities', n_archs=6, df_dic={}):
-    if typ not in archetypes_dic.keys():
-        archetypes_dic[typ] = {}
-    if n_archs not in archetypes_dic[typ].keys():
-        archetypes_dic[typ][n_archs] = {}
+def archetypes(corpus_id, typ='entities', n_archs=6, df_dic={}):
+    if corpus_id not in archetypes_dic.keys():
+        archetypes_dic[corpus_id] = {}
+    if typ not in archetypes_dic[corpus_id].keys():
+        archetypes_dic[corpus_id][typ] = {}
+    if n_archs not in archetypes_dic[corpus_id][typ].keys():
+        archetypes_dic[corpus_id][typ][n_archs] = {}
         df = pd.DataFrame()
         for key in df_dic:
             dfx = df_dic[key][typ].copy()
@@ -77,17 +79,16 @@ def archetypes(typ='entities', n_archs=6, df_dic={}):
         mat = df.pivot_table(
             index='dictation', columns='text', values='relevance'
         ).fillna(0)
-        archetypes_dic[typ][n_archs] = Archetypes(mat, n_archs)
-    return archetypes_dic[typ][n_archs]
+        archetypes_dic[corpus_id][typ][n_archs] = Archetypes(mat, n_archs)
+    return archetypes_dic[corpus_id][typ][n_archs]
 
 
-def display_archetype(typ='entities', n_archs=6, arch_nr=0, var='variables',
+def display_archetype(corpus_id, typ='entities', n_archs=6, arch_nr=0,
                       threshold=0.1, df_dic={}):
-    if var == 'variables':
-        arc = archetypes(typ, n_archs, df_dic).f.T.sort_values(
-            by=arch_nr, ascending=False
-        )
-        result = arc[
-            arc[arch_nr] >= (threshold * arc[arch_nr][0])
-        ]
-        return result
+    arc = archetypes(corpus_id, typ, n_archs, df_dic).f.T.sort_values(
+        by=arch_nr, ascending=False
+    )
+    result = arc[
+        arc[arch_nr] >= (threshold * arc[arch_nr][0])
+    ]
+    return result
