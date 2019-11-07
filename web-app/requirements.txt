@@ -6,3 +6,4 @@ dash
 dash-bootstrap-components
 plotly
 scikit-learn
+flask_sqlalchemy
