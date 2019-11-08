@@ -60,7 +60,6 @@ def layout():
                                 {'label': 'Keywords', 'value': 'keywords'},
                                 {'label': 'Entities', 'value': 'entities'},
                                 {'label': 'Concepts', 'value': 'concepts'},
-                                {'label': 'Categories', 'value': 'categories'},
                             ],
                             value='keywords',
                         )
