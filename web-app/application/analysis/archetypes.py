@@ -3,6 +3,10 @@ import numpy as np
 from sklearn.decomposition import NMF
 
 
+# This will act as our cache for already created Archetypes objects.
+archetypes_dic = {}
+
+
 def norm_dot(vec, weights=False):
     '''
     Normalizes a vector - dot product: v @ v = 1
@@ -11,6 +15,39 @@ def norm_dot(vec, weights=False):
         return np.sqrt(vec @ vec)
 
     return vec / np.sqrt(vec @ vec)
+
+
+def norm_sum(vec, weights=False):
+    '''
+    Normalizes a vector - sum: v.sum = 1
+    '''
+    if weights:
+        return vec.sum()
+
+    return vec / vec.sum()
+
+
+def create_archetypes(corpus_id, typ='entities', n_archs=6, df_dic={}):
+    if corpus_id not in archetypes_dic.keys():
+        archetypes_dic[corpus_id] = {}
+    if typ not in archetypes_dic[corpus_id].keys():
+        archetypes_dic[corpus_id][typ] = {}
+    if n_archs not in archetypes_dic[corpus_id][typ].keys():
+        archetypes_dic[corpus_id][typ][n_archs] = {}
+        df = pd.DataFrame()
+        for key in df_dic:
+            dfx = df_dic[key][typ].copy()
+            dfx['dictation'] = key
+            df = df.append(dfx, sort=True)
+        if typ == 'entities':
+            df = df[df['type'] == 'HealthCondition']
+            df.rename({'relevance': 'rel0'}, axis=1, inplace=True)
+            df['relevance'] = df['rel0'] * df['confidence']
+        mat = df.pivot_table(
+            index='dictation', columns='text', values='relevance'
+        ).fillna(0)
+        archetypes_dic[corpus_id][typ][n_archs] = Archetypes(mat, n_archs)
+    return archetypes_dic[corpus_id][typ][n_archs]
 
 
 class Archetypes:
@@ -55,40 +92,3 @@ class Archetypes:
 
         self.f = pd.DataFrame(self.h, columns=X.columns)
         self.fn = self.f.T.apply(norm).T
-
-
-archetypes_dic = {}
-
-
-def archetypes(corpus_id, typ='entities', n_archs=6, df_dic={}):
-    if corpus_id not in archetypes_dic.keys():
-        archetypes_dic[corpus_id] = {}
-    if typ not in archetypes_dic[corpus_id].keys():
-        archetypes_dic[corpus_id][typ] = {}
-    if n_archs not in archetypes_dic[corpus_id][typ].keys():
-        archetypes_dic[corpus_id][typ][n_archs] = {}
-        df = pd.DataFrame()
-        for key in df_dic:
-            dfx = df_dic[key][typ].copy()
-            dfx['dictation'] = key
-            df = df.append(dfx, sort=True)
-        if typ == 'entities':
-            df = df[df['type'] == 'HealthCondition']
-            df.rename({'relevance': 'rel0'}, axis=1, inplace=True)
-            df['relevance'] = df['rel0'] * df['confidence']
-        mat = df.pivot_table(
-            index='dictation', columns='text', values='relevance'
-        ).fillna(0)
-        archetypes_dic[corpus_id][typ][n_archs] = Archetypes(mat, n_archs)
-    return archetypes_dic[corpus_id][typ][n_archs]
-
-
-def display_archetype(corpus_id, typ='entities', n_archs=6, arch_nr=0,
-                      threshold=0.1, df_dic={}):
-    arc = archetypes(corpus_id, typ, n_archs, df_dic).f.T.sort_values(
-        by=arch_nr, ascending=False
-    )
-    result = arc[
-        arc[arch_nr] >= (threshold * arc[arch_nr][0])
-    ]
-    return result

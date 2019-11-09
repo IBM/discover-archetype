@@ -1,29 +1,20 @@
-import pickle
-
 from dash.dependencies import Input, Output
-import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from application.models import Corpus, CorpusResult
-from .archetypes import display_archetype
+from application.analysis.archetypes import create_archetypes
+from application.analysis.corpus import get_corpus_results
 
 
 def register_callbacks(dash_app):
 
-    def get_corpus_results(corpus_id):
-        results = CorpusResult.query.filter(
-            CorpusResult.corpus_id == corpus_id
-        ).all()
-
-        df_dic = {}
-        for result in results:
-            watson_response = pickle.loads(result.data)
-            df_dic[result.name] = {}
-            for item in list(watson_response.result.items()):
-                df_dic[result.name][item[0]] = pd.DataFrame(list(item[1]))
-
-        return df_dic
+    def display_archetype(corpus_id, typ='entities', n_archs=6, arch_nr=0,
+                          threshold=0.1, df_dic={}):
+        arc = create_archetypes(
+            corpus_id, typ, n_archs, df_dic).f.T.sort_values(
+                by=arch_nr, ascending=False
+        )
+        return arc[arc[arch_nr] >= (threshold * arc[arch_nr][0])]
 
     @dash_app.callback(
         Output('variables-heatmap', 'figure'),
@@ -63,19 +54,3 @@ def register_callbacks(dash_app):
             title_text="Discovered Archetypes"
         )
         return fig
-
-    @dash_app.callback(
-        Output('corpus-dropdown2', 'options'),
-        [Input('corpus-dropdown2', 'search_value')],
-    )
-    def update_corpus_options(search_value):
-        print('in update corpus options')
-
-        options = []
-        corpora = Corpus.query.all()
-        for corpus in corpora:
-            options.append({
-                'label': '{} (ID: {})'.format(corpus.name, corpus.id),
-                'value': corpus.id
-            })
-        return options

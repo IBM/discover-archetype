@@ -10,6 +10,8 @@ from application.pages.dashboard.callbacks import register_callbacks as ac_reg
 from application.pages.home.layout import layout as home_layout
 from application.pages.upload.layout import layout as upload_layout
 from application.pages.upload.callbacks import register_callbacks as up_reg
+from application.pages.match.layout import layout as match_layout
+from application.pages.match.callbacks import register_callbacks as ma_reg
 
 
 def create_app():
@@ -40,7 +42,7 @@ def create_app():
                     dbc.NavItem(dbc.NavLink("Home", href="/")),
                     dbc.NavItem(dbc.NavLink("Upload", href="/upload")),
                     dbc.NavItem(dbc.NavLink("Archetypes", href="/archetypes")),
-                    dbc.NavItem(dbc.NavLink("Match", href="#"))
+                    dbc.NavItem(dbc.NavLink("Match", href="/match"))
                 ],
                 brand="Archetype Discovery",
                 brand_href="/",
@@ -59,6 +61,8 @@ def create_app():
             return archetype_layout()
         elif pathname == '/upload':
             return upload_layout()
+        elif pathname == '/match':
+            return match_layout()
         else:
             return home_layout()
 
@@ -66,6 +70,7 @@ def create_app():
         dash_app.title = 'Archetype Discovery'
         ac_reg(dash_app)
         up_reg(dash_app)
+        ma_reg(dash_app)
 
         # Create tables for our models
         db.create_all()
