@@ -57,9 +57,17 @@ def layout():
         html.Label('Document Text', style={'fontWeight': 'bold'}),
         dbc.Textarea(className='mb-3',
                      id='document-text',
-                     placeholder='Enter text here'),
+                     placeholder='Enter text here',
+                     rows=10),
         dbc.Button('Submit',
                    color='primary',
                    id='submit-button'),
-        html.Div(id='output')
+        html.Div([
+            dcc.Graph(
+                id='output-graph',
+                style={'margin-right': 'auto',
+                       'margin-left': 'auto',
+                       'width': '40%'}
+            )
+        ])
     ], className='mt-4 mb-4')
