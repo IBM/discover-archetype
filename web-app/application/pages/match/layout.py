@@ -64,10 +64,15 @@ def layout():
                    id='submit-button'),
         html.Div([
             dcc.Graph(
-                id='output-graph',
+                id='output-similarity-graph',
                 style={'margin-right': 'auto',
                        'margin-left': 'auto',
                        'width': '40%'}
+            )
+        ]),
+        html.Div([
+            dcc.Graph(
+                id='output-archetypes-graph'
             )
         ])
     ], className='mt-4 mb-4')

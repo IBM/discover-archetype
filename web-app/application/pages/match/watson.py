@@ -1,4 +1,5 @@
 from flask import current_app
+import numpy as np
 import pandas as pd
 
 from ibm_watson import NaturalLanguageUnderstandingV1 as NaLaUn
@@ -6,7 +7,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import \
     Features, ConceptsOptions, EntitiesOptions, KeywordsOptions
 
-from application.analysis.archetypes import create_archetypes, norm_dot
+from application.analysis.archetypes import create_archetypes, norm_dot, scale
 from application.analysis.corpus import get_corpus_results
 
 
@@ -55,4 +56,19 @@ def analyze_text(corpus_id, text, type, n_archs):
         (archetypes.fn[in_common] @ test_vec.loc[in_common]) * 100
     ).applymap(int)
     similarities.columns = ['similarity %']
-    return similarities
+
+    test_vec_expanded = pd.DataFrame(
+        test_vec,
+        index=archetypes.f.columns
+    ).apply(scale).fillna(-0.1)
+
+    compare = archetypes.f.T.apply(scale)
+    compare['DOC'] = test_vec_expanded.apply(scale)
+
+    archetype_maps = []
+    for ix in archetypes.f.index:
+        cmp = compare.sort_values(by=ix, ascending=False)[[ix, 'DOC']]
+        cmp = cmp[cmp[ix] > 0.1]
+        archetype_maps.append(cmp.applymap(np.sqrt))
+
+    return similarities, archetype_maps
