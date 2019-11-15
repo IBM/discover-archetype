@@ -27,6 +27,16 @@ def norm_sum(vec, weights=False):
     return vec / vec.sum()
 
 
+def scale(vec, weights=False):
+    '''
+    Normalizes a vector: v.min = 0, v.max = 1
+    '''
+    stop_divide_by_zero = 0.00000001
+    if weights:
+        return (vec.max()-vec.min() + stop_divide_by_zero)
+    return (vec-vec.min())/(vec.max()-vec.min() + stop_divide_by_zero)
+
+
 def create_archetypes(corpus_id, typ='entities', n_archs=6, df_dic={}):
     if corpus_id not in archetypes_dic.keys():
         archetypes_dic[corpus_id] = {}

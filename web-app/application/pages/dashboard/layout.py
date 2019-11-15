@@ -7,7 +7,7 @@ from application.models import Corpus
 
 def layout():
     corpus_options = []
-    corpora = Corpus.query.all()
+    corpora = Corpus.query.filter(Corpus.status == 'ready').all()
     for corpus in corpora:
         corpus_options.append({
             'label': '{} (ID: {})'.format(corpus.name, corpus.id),
@@ -24,21 +24,39 @@ def layout():
                         'marginRight': 20
                     },
                 ),
-
-                dcc.Markdown(
-                    children='''
-                        Archetypal Analysis of Medical Dictations. Process:
-                        1. **Natural Language Understanding**:
-                            - Dictations are analyzed by IBM Watson Natural
-                              Language Understanding.
-                            - Output variables: keywords, entities, concepts
-                              and categories.
-                        2. **Archetypal Analysis**:
-                            - Create Archetypes: Cluster data over variables,
-                              using NMF Non-zero Matrix Factorization
-                        ''',
-                    className='nine columns')
-            ], className="row"),
+                html.P('Perform archetypal analysis on a corpus:'),
+                html.Ol([
+                    html.Li([
+                        html.Strong('Natural Language Understanding'),
+                        html.Ul([
+                            html.Li(
+                                'Select a corpus that has been analyzed by '
+                                'IBM Watson Natural Language Understanding.'
+                            ),
+                            html.Li(
+                                'Select what output variables to discover '
+                                'archetypes from (i.e. concepts, keywords, '
+                                'and entities)'
+                            ),
+                        ]),
+                    ]),
+                    html.Li([
+                        html.Strong('Archetypal Analysis'),
+                        html.Ul([
+                            html.Li(
+                                'From the selected corpus data, archetypes '
+                                'will be created by clustering data over '
+                                'the selected variable using NMF '
+                                '(Non-Negative Matrix Factorization).'
+                            ),
+                            html.Li(
+                                'Variables are mapped onto the '
+                                'archetypes/clusters.'
+                            ),
+                        ]),
+                    ]),
+                ]),
+            ]),
             html.Div([
                 dbc.Row([
                     dbc.Col([
@@ -57,11 +75,11 @@ def layout():
                         dcc.Dropdown(
                             id='Var',
                             options=[
+                                {'label': 'Concepts', 'value': 'concepts'},
                                 {'label': 'Keywords', 'value': 'keywords'},
                                 {'label': 'Entities', 'value': 'entities'},
-                                {'label': 'Concepts', 'value': 'concepts'},
                             ],
-                            value='keywords',
+                            value='concepts',
                         )
                     ]),
                     dbc.Col([
@@ -70,7 +88,7 @@ def layout():
                         dcc.Dropdown(
                             id='NoA',
                             options=[{'label': k, 'value': k}
-                                     for k in range(2, 100)],
+                                     for k in range(2, 16)],
                             value=6,
                             multi=False
                         )

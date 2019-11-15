@@ -7,7 +7,7 @@ from application.models import Corpus
 
 def layout():
     corpus_options = []
-    corpora = Corpus.query.all()
+    corpora = Corpus.query.filter(Corpus.status == 'ready').all()
     for corpus in corpora:
         corpus_options.append({
             'label': '{} (ID: {})'.format(corpus.name, corpus.id),
@@ -35,11 +35,11 @@ def layout():
                 dcc.Dropdown(
                     id='type',
                     options=[
+                        {'label': 'Concepts', 'value': 'concepts'},
                         {'label': 'Keywords', 'value': 'keywords'},
                         {'label': 'Entities', 'value': 'entities'},
-                        {'label': 'Concepts', 'value': 'concepts'},
                     ],
-                    value='keywords',
+                    value='concepts',
                 )
             ]),
             dbc.Col([
@@ -48,7 +48,7 @@ def layout():
                 dcc.Dropdown(
                     id='num-archetype',
                     options=[{'label': k, 'value': k}
-                             for k in range(2, 100)],
+                             for k in range(2, 16)],
                     value=6,
                     multi=False
                 )
@@ -64,10 +64,15 @@ def layout():
                    id='submit-button'),
         html.Div([
             dcc.Graph(
-                id='output-graph',
+                id='output-similarity-graph',
                 style={'margin-right': 'auto',
                        'margin-left': 'auto',
-                       'width': '40%'}
+                       'width': '50%'}
+            )
+        ]),
+        html.Div([
+            dcc.Graph(
+                id='output-archetypes-graph'
             )
         ])
     ], className='mt-4 mb-4')

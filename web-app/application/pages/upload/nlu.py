@@ -5,21 +5,16 @@ import time
 from ibm_watson import NaturalLanguageUnderstandingV1 as NaLaUn
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import \
-    Features, CategoriesOptions, \
-    ConceptsOptions, EntitiesOptions, KeywordsOptions, \
-    RelationsOptions, SyntaxOptions
+    Features, ConceptsOptions, EntitiesOptions, KeywordsOptions
 
 from application.models import db, Corpus, CorpusResult
 
 
 def analyze_corpus(app, name, directory):
     features = Features(
-        categories=CategoriesOptions(),
         concepts=ConceptsOptions(),
         entities=EntitiesOptions(),
         keywords=KeywordsOptions(),
-        relations=RelationsOptions(),
-        syntax=SyntaxOptions()
     )
     with app.app_context():
         authenticator = IAMAuthenticator(

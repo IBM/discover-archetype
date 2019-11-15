@@ -34,8 +34,8 @@ def register_callbacks(dash_app):
                 threshold=threshold, df_dic=df_dic
             ).sort_values(by=i)
 
-        maxrows = int(1 + n_archs//3)
-        cols = 3
+        cols = 2
+        maxrows = int(1 + n_archs//cols)
         fig = make_subplots(rows=maxrows, cols=cols, horizontal_spacing=.2)
         for i in range(n_archs):
             res = f(i)
@@ -47,6 +47,12 @@ def register_callbacks(dash_app):
                     xgap=1,
                     ygap=1,
                 ), col=(i % cols + 1), row=(int(i // cols) + 1)
+            )
+            fig.update_yaxes(
+                tickangle=-30,
+                tickfont={'size': 9},
+                col=(i % cols + 1),
+                row=(int(i // cols) + 1)
             )
         fig.update_layout(
             height=400*maxrows,
