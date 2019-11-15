@@ -4,7 +4,7 @@ import plotly.figure_factory as ff
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from .watson import analyze_text
+from .analyzer import analyze_text
 
 
 def register_callbacks(dash_app):
@@ -24,7 +24,6 @@ def register_callbacks(dash_app):
         similarities, archetype_maps = analyze_text(
             corpus_id, document_text, type, num_archetype
         )
-        print(archetype_maps)
 
         fig = ff.create_annotated_heatmap(
             z=similarities.values.tolist(),
@@ -40,11 +39,17 @@ def register_callbacks(dash_app):
         fig['layout']['title'] = 'Document Archetype Matching'
         fig['layout']['yaxis']['title'] = 'Archetype'
 
-        maxrows = int(1 + num_archetype//3)
-        cols = 3
-        fig2 = make_subplots(rows=maxrows, cols=cols, horizontal_spacing=.2)
-        for i in range(len(archetype_maps)):
-            print([str(x) for x in archetype_maps[i].columns.tolist()])
+        cols = 2
+        maxrows = int(1 + num_archetype//cols)
+        fig2 = make_subplots(
+            rows=maxrows,
+            cols=cols,
+            horizontal_spacing=.2,
+            subplot_titles=[
+                'Archetype {} vs DOC'.format(i) for i in range(num_archetype)
+            ]
+        )
+        for i in range(num_archetype):
             fig2.add_trace(
                 go.Heatmap(
                     z=archetype_maps[i].values.tolist(),
@@ -56,12 +61,18 @@ def register_callbacks(dash_app):
                     ],
                     xgap=1,
                     ygap=1,
+                    name='Comparison'
                 ), col=(i % cols + 1), row=(int(i // cols) + 1)
+            )
+            fig2.update_yaxes(
+                tickangle=-30,
+                tickfont={'size': 9},
+                col=(i % cols + 1),
+                row=(int(i // cols) + 1)
             )
         fig2.update_layout(
             height=400*maxrows,
-            width=1100,
-            title_text='Archetype vs Document Comparisons'
+            title_text='Archetype vs Document Comparisons',
         )
 
         return fig, fig2

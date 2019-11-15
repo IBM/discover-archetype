@@ -43,14 +43,12 @@ def analyze_text(corpus_id, text, type, n_archs):
 
     test_vec = \
         results['concepts'].set_index('text')[['relevance']].apply(norm_dot)
-    print(test_vec)
     archetypes = get_corpus_archetypes(corpus_id, type=type, n_archs=n_archs)
 
     # Select the subset of features in corpus that cover the test vector.
     in_common = list(set(test_vec.index).intersection(
         set(archetypes.fn.columns)
     ))
-    print(in_common)
 
     similarities = (
         (archetypes.fn[in_common] @ test_vec.loc[in_common]) * 100
@@ -67,7 +65,7 @@ def analyze_text(corpus_id, text, type, n_archs):
 
     archetype_maps = []
     for ix in archetypes.f.index:
-        cmp = compare.sort_values(by=ix, ascending=False)[[ix, 'DOC']]
+        cmp = compare.sort_values(by=ix, ascending=True)[[ix, 'DOC']]
         cmp = cmp[cmp[ix] > 0.1]
         archetype_maps.append(cmp.applymap(np.sqrt))
 
