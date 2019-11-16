@@ -1,8 +1,8 @@
 # Archetype Discovery Web App
 
-A browser based UI with 3 tabs:
-  1. Run Watson NLU on a new corpus and save the results.
-  2. Compute the archetypes and analyze them.
+This web app showcases the archetype discovery process. Users can:
+  1. Upload a corpus (`zip` file containing `txt` files) which will be processed by Watson NLU.
+  2. Compute the archetypes of a corpus and analyze them.
   3. Match a new document with the archetypes and see the relevant terms.
 
 ## Install Dependencies
@@ -33,14 +33,16 @@ credentials.
 
 #### `cp instance/config.py.sample instance config.py`
 
+By default, data will be stored in a locally created SQLite database file. However, you can use
+whatever SQL database you desire as long you provide the correct database connection URI through the
+`SQLALCHEMY_DATABASE_URI` option.
 
 ## Run application
 
-To run the application in development mode to try things out, run the following commands:
+To run the application in development mode to try things out, run the following command:
 
 ```bash
-$ export FLASK_APP=app.py
-$ flask run
+$ python app.py
 ```
 
 This will deploy a development server which can be viewed in a browser by visiting
