@@ -8,9 +8,9 @@ class CloudObjectStore:
         bucket_name:  name of your storage bucket
         endpoint: for external access, "https://s3.us-east.cloud-object-storage.appdomain.cloud"
         endpoint: for internal access, "https://s3.private.us-east.cloud-object-storage.appdomain.cloud"
-        api_key:  your API key, "Gok5I2azHDLqKtjdLvbVDB64JS-4IY9Mm7PJY6aMnBcO"
+        api_key:  your API key
         auth_endpoint: "https://iam.cloud.ibm.com/identity/token"
-        resource_crn:  your bucket crn,  "crn:v1:bluemix:public:cloud-object-storage:global:a/0b5a00334eaf9eb9339d2ab48f2d4767:e6f2b348-2eef-48af-9abe-338bea538358:bucket:dictations"
+        resource_crn:  your bucket crn
 
     '''
     def __init__(self, bucket_name, 
