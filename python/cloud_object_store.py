@@ -6,11 +6,11 @@ class CloudObjectStore:
     '''
     Interface to IBM Cloud Object Store, typical values:
         bucket_name:  name of your storage bucket
+        api_key:  your API key
+        resource_crn:  your bucket crn
         endpoint: for external access, "https://s3.us-east.cloud-object-storage.appdomain.cloud"
         endpoint: for internal access, "https://s3.private.us-east.cloud-object-storage.appdomain.cloud"
-        api_key:  your API key
         auth_endpoint: "https://iam.cloud.ibm.com/identity/token"
-        resource_crn:  your bucket crn
 
     '''
     def __init__(self, bucket_name, 
