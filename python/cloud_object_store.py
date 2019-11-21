@@ -6,8 +6,8 @@ class CloudObjectStore:
     '''
     Interface to IBM Cloud Object Store, typical values:
         bucket_name:  name of your storage bucket
-        api_key:  your API key
-        resource_crn:  your bucket crn
+        api_key:  your API key (go to Cloud Storage dashboard -> Service credentials)
+        resource_crn:  your bucket crn (go to your bucket -> Configuration:  Bucket instance CRN)
         endpoint: for external access, "https://s3.us-east.cloud-object-storage.appdomain.cloud"
         endpoint: for internal access, "https://s3.private.us-east.cloud-object-storage.appdomain.cloud"
         auth_endpoint: "https://iam.cloud.ibm.com/identity/token"
@@ -33,11 +33,12 @@ class CloudObjectStore:
                                       endpoint_url=self.COS_ENDPOINT)
         
     def get_bucket_contents(self):
-        print("Retrieving bucket contents from: {0}".format(self.bucket_name))
+        #print("Retrieving bucket contents from: {0}".format(self.bucket_name))
         try:
             files = self.cos.Bucket(self.bucket_name).objects.all()
-            for file in files:
-                print("Item: {0} ({1} bytes).".format(file.key, file.size))
+            return [file.key for file in files]
+            #for file in files:
+            #    print("Item: {0} ({1} bytes).".format(file.key, file.size))
         except ClientError as be:
             print("CLIENT ERROR: {0}\n".format(be))
         except Exception as e:

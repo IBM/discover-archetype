@@ -122,44 +122,28 @@ def dotdf(df1,df2):
 ### OS system commands
 
 from fnmatch import fnmatch 
-def ls(search,name_only = False):
+def ls(search,name_only = False,cos=None):
     '''
     emulates unix ls (without flags). Accepts wildcard/'*' in 
+    name_only=False:  return filename with full directory path
+    name_only=True:  return filename only without directory
+    cos: use cloud object store if specified, otherwise use filesystem
     '''
     search_split = search.replace('/','/ ').split()
     pattern      =         search_split[ -1]
-    path         = ''.join(search_split[:-1])
-    all_names    = np.array(os.listdir(path)) # numpy array enables Boolean Mask
-    if not name_only: # add path to each name
+    path         = './'.join(search_split[:-1])
+    if cos is None:
+        # look in filesystem
+        all_names = np.array(os.listdir(path)) # numpy array enables Boolean Mask
+    else:
+        # look in cloud object store
+        all_name = np.array(cos.get_bucket_contents())
+    if not name_only and cos is None: # add path to each name if using filesystem
         all_names    = np.array([path+name for name in all_names]) 
     mask         = [fnmatch(name,pattern) for name in all_names]
     result       = all_names[mask]
     return result
 
-##########################################
-### IBM-WATSON/NLU API-KEY (DON'T EDIT)
-##########################################
-# The script asks for the API key when run. 
-# Do NOT save API-Keys in the code. 
-
-local_dir_exists = os.path.exists('.local')
-if not local_dir_exists:
-    os.mkdir('.local')
-    
-credentials_exists = os.path.exists('.local/crd.env')
-if not credentials_exists:
-    print('Credentials needed for https://cloud.ibm.com/catalog/services/natural-language-understanding )')
-    apikey = input(prompt='API-Key?')
-    apiurl = input(prompt='API-URL?')
-    crd = open('.local/crd.env','w')
-    crd.write(  'NATURAL_LANGUAGE_UNDERSTANDING_IAM_APIKEY='+apikey)
-    crd.write('\nNATURAL_LANGUAGE_UNDERSTANDING_URL='       +apiurl)  
-    
-
-# dian_pkl_file = PATH['results']+'all_dictations_nlu.pkl'  
-# dian_pkl_exists = os.path.exists(dian_pkl_file)
-# if 'apikey' not in locals():
-#     apikey = input(prompt='API-Key? ( https://cloud.ibm.com/catalog/services/natural-language-understanding )')  
 
 
 # # MATRIX-FACTORIZATION: DIMENSIONALITY REDUCTION & ARCHETYPING
@@ -264,31 +248,6 @@ class Svd:
         return cut_dic
         
 
-##########################
-## SET HYPERPARAMATERS
-#### edit below ##########
-
-# Import credentials
-cred = open('.local/crd.env','r').read()
-apikey,apiurl = cred.replace('NATURAL_LANGUAGE_UNDERSTANDING_IAM_APIKEY=','').replace(
-                            'NATURAL_LANGUAGE_UNDERSTANDING_URL=','').split()
-
-PATH = {}
-PATH['data']    = '../data/Documents/'
-PATH['results'] = './Watson-nlu-results/'
-
-NLU = {}
-NLU['apikey']         = apikey
-NLU['apiurl']         = apiurl
-NLU['version']        = '2019-07-12'
-NLU['features']       = Features(
-                        categories= CategoriesOptions(),
-                        concepts  = ConceptsOptions(),
-                        entities  = EntitiesOptions(),
-                        keywords  = KeywordsOptions(),
-                        relations = RelationsOptions(),
-                        syntax    = SyntaxOptions()
-                        )
 
 
 class WatsonDocumentArchetypes:
