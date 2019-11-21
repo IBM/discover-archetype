@@ -45,10 +45,11 @@ class CloudObjectStore:
             print("Unable to retrieve bucket contents: {0}".format(e))
         
     def get_item(self, item_name):
-        print("Retrieving item from bucket: {0}, key: {1}".format(self.bucket_name, item_name))
+        #print("Retrieving item from bucket: {0}, key: {1}".format(self.bucket_name, item_name))
         try:
             file = self.cos.Object(self.bucket_name, item_name).get()
-            print("File Contents: {0}".format(file["Body"].read()))
+            #print("File Contents: {0}".format(file["Body"].read()))
+            return file["Body"].read()
         except ClientError as be:
             print("CLIENT ERROR: {0}\n".format(be))
         except Exception as e:

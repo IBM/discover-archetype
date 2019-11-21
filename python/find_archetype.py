@@ -121,7 +121,7 @@ def dotdf(df1,df2):
 
 ### OS system commands
 
-from fnmatch import fnmatch 
+#from fnmatch import fnmatch 
 def ls(search,name_only = False,cos=None):
     '''
     emulates unix ls (without flags). Accepts wildcard/'*' in 
