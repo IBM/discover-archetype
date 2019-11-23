@@ -1,4 +1,5 @@
 
+import json
 import ibm_boto3
 from ibm_botocore.client import Config, ClientError
 
@@ -55,14 +56,15 @@ class CloudObjectStore:
         except Exception as e:
             print("Unable to retrieve file contents: {0}".format(e))
         
-    def create_text_file(self, item_name, file_text):
+    def create_item(self, item_name, file_text):
         print("Creating new item: {0}".format(item_name))
         try:
             self.cos.Object(self.bucket_name, item_name).put(
                 Body=file_text
                 )
-            print("Item: {0} created!".format(item_name))
+            #print("Item: {0} created!".format(item_name))
         except ClientError as be:
             print("CLIENT ERROR: {0}\n".format(be))
         except Exception as e:
             print("Unable to create text file: {0}".format(e))
+
