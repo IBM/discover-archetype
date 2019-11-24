@@ -34,8 +34,10 @@ from scipy.linalg import svd
 from sklearn.model_selection import train_test_split
 
 ### NLU
-from ibm_watson import NaturalLanguageUnderstandingV1 as NaLaUn
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson import NaturalLanguageUnderstandingV1 as NLUV1
 from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions,ConceptsOptions,EntitiesOptions,KeywordsOptions,RelationsOptions,SyntaxOptions
+
 
 ### Presentation / apps
 from matplotlib import pyplot as plt
@@ -71,6 +73,7 @@ def norm_stat(vec, weights = False):
     '''
     if weights:
         return  np.mean(abs(vec - vec.mean()))  
+    
     return (vec-vec.mean())/vec.std()
 
 #### Algebraic normalization - dot product
@@ -121,29 +124,25 @@ def dotdf(df1,df2):
 
 ### OS system commands
 
-#from fnmatch import fnmatch 
+from fnmatch import fnmatch 
 def ls(search,name_only = False,cos=None):
     '''
     emulates unix ls (without flags). Accepts wildcard/'*' in 
-    name_only=False:  return filename with full directory path
-    name_only=True:  return filename only without directory
-    cos: use cloud object store if specified, otherwise use filesystem
     '''
     search_split = search.replace('/','/ ').split()
     pattern      =         search_split[ -1]
-    path         = './'.join(search_split[:-1])
+    path         = ''.join(search_split[:-1])
     if cos is None:
         # look in filesystem
         all_names = np.array(os.listdir(path)) # numpy array enables Boolean Mask
     else:
         # look in cloud object store
-        all_name = np.array(cos.get_bucket_contents())
-    if not name_only and cos is None: # add path to each name if using filesystem
+        all_names = np.array(cos.get_bucket_contents())
+    if not name_only and cos is None: # add path to each name
         all_names    = np.array([path+name for name in all_names]) 
     mask         = [fnmatch(name,pattern) for name in all_names]
     result       = all_names[mask]
     return result
-
 
 
 # # MATRIX-FACTORIZATION: DIMENSIONALITY REDUCTION & ARCHETYPING
@@ -249,7 +248,6 @@ class Svd:
         
 
 
-
 class WatsonDocumentArchetypes:
     '''
     WatsonDocumentArchetypes performs Archetypal Analysis on a corpus consisting of a set of documents, for example a set 
@@ -287,7 +285,8 @@ class WatsonDocumentArchetypes:
     
     def __init__(self, PATH, NLU, 
                  train_test = False,
-                 random_state = None):
+                 random_state = None,
+                 use_cloud_store = USE_CLOUD_STORE):
         
         self.PATH         = PATH
         self.NLU          = NLU
@@ -295,8 +294,17 @@ class WatsonDocumentArchetypes:
         # To random partition documents into train/test-sets, 
         # choose relative size of test-set, train_test (1 = 100%)
         self.train_test = train_test  
+        self.use_cloud_store = use_cloud_store
         
-        self.nlu_model  = NaLaUn(version=NLU['version'] , iam_apikey = NLU['apikey'], url = NLU['apiurl'])  #Local Natural Language Understanding object
+        # Create clients to interface Watson and Cloud services
+        authenticator = IAMAuthenticator(NLU['apikey'])
+        self.nlu_model  = NLUV1(version=NLU['version'], authenticator=authenticator)
+        self.nlu_model.set_service_url(NLU['apiurl'])
+        if self.use_cloud_store:
+            self.cos_dictations=cloud_object_store.CloudObjectStore(DICTATION_BUCKET, COS_DICTATION_APIKEY, COS_DICTATION_CRN, COS_DICTATION_ENDPOINT)
+            self.cos_nlu=cloud_object_store.CloudObjectStore(NLU_BUCKET, COS_NLU_APIKEY, COS_NLU_CRN, COS_NLU_ENDPOINT)
+        
+            
             # Initiate X_matrix dictionaries
         self.X_matrix_dic = {}
         self.X_matrix_train_dic = {}
@@ -307,12 +315,21 @@ class WatsonDocumentArchetypes:
         ################
         ## PREPARE DATA 
         ################
-        self.filenames = ls(self.PATH['data']+'*.txt', name_only=True)  # all filenames ending with '.txt' 
+        if self.use_cloud_store:
+            # load from cloud storage bucket
+            self.filenames = ls('*.txt', name_only=True, cos=self.cos_dictations)
+        else:
+            # load from local file system
+            self.filenames = ls(self.PATH['data']+'*.txt', name_only=True)  # all filenames ending with '.txt' 
+ 
         self.names     = [name.replace('.txt','') for name in self.filenames]
         self.all_names = self.names *1      # if train_test - self.names will be set to self.names_train
         self.dictation_dic = {}             # dictionary for dictation files
         for name in self.filenames:
-            self.dictation_dic[name.replace('.txt','')] = open(self.PATH['data']+name, encoding="utf-8").read()
+            if (self.use_cloud_store):
+                self.dictation_dic[name.replace('.txt','')] = self.cos_dictations.get_item(name).decode('utf-8')
+            else:
+                self.dictation_dic[name.replace('.txt','')] = open(self.PATH['data']+name, encoding="utf-8").read()
         self.dictation_df = pd.Series(self.dictation_dic)
             
         ####################
@@ -326,30 +343,51 @@ class WatsonDocumentArchetypes:
         ## PERFORM WATSON NLU ANALYSIS
         ###############################
         
-# QQQQQQQQQQQQQQQQQQ TODO QQQQQQQQQQQQQQQQQQ
-#   * IF DICTATION ALREADY HAS PKL WITH Watson NLU: READ EXISTING PKL. SKIP NEW WATSON CALC.
-#
+        # QQQQQQQQQQQQQQQQQQ TODO QQQQQQQQQQQQQQQQQQ
+        #   * IF DICTATION ALREADY HAS PKL WITH Watson NLU: READ EXISTING PKL. SKIP NEW WATSON CALC.
+        #
  
         self.watson = {}    #Dictionary with Watson-NLU results for each dictation
         
-        self.watson_pkl = PATH['results']+'all_dictations_nlu.pkl'  
-        pkl_exists = os.path.exists(self.watson_pkl)
-
+        
+        if self.use_cloud_store:
+            # Check in Cloud storage bucket
+            self.watson_pkl = 'all_dictations_nlu.pkl'
+            pkl_exists = self.watson_pkl in self.cos_nlu.get_bucket_contents()
+        else:
+            # Check in local filesystem 
+            self.watson_pkl = PATH['results']+'all_dictations_nlu.pkl'  
+            pkl_exists = os.path.exists(self.watson_pkl)
+ 
         if pkl_exists:
-            self.watson = pickle.load( open( self.watson_pkl, "rb" ) )
-
+            if self.use_cloud_store:
+                # load previous result from Cloud storage
+                self.watson = pickle.loads( self.cos_nlu.get_item(self.watson_pkl) )
+            else:
+                # load previous result from local filesystem
+                self.watson = pickle.load( open( self.watson_pkl, "rb" ) )
+                
         else: #perform nlu-analysis on dictations
             for item in list(self.dictation_dic.items()):
                 lbl  = item[0]
                 text = item[1]
                 self.watson[lbl] = self.nlu_model.analyze(text = text, features=NLU['features'])
-                f = open(PATH['results']+str(lbl)+'_nlu.pkl','wb')
-                pickle.dump(self.watson[lbl],f)
-                f.close()
+                if self.use_cloud_store:
+                    # save result to Cloud storage
+                    self.cos_nlu.create_item(str(lbl)+'_nlu.pkl', pickle.dumps(self.watson[lbl]))
+                else:
+                    # save result to local filesystem
+                    f = open(PATH['results']+str(lbl)+'_nlu.pkl','wb')
+                    pickle.dump(self.watson[lbl],f)
+                    f.close()
 
-            f = open(self.watson_pkl,'wb')
-            pickle.dump(self.watson,f)
-            f.close() 
+            if self.use_cloud_store:
+                # save result to Cloud storage
+                self.cos_nlu.create_item(self.watson_pkl, pickle.dumps(self.watson))
+            else:
+                f = open(self.watson_pkl,'wb')
+                pickle.dump(self.watson,f)
+                f.close() 
 
         # Copy Watson NLU results to Pandas Dataframes
         self.watson_nlu = {}
@@ -454,5 +492,3 @@ class WatsonDocumentArchetypes:
     # ANALYZE A TEXT
     def analyze(self,text,typ='entities'):
         pass
-        
-        
