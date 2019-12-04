@@ -8,6 +8,8 @@
 ### IMPORT MODULES
 ##################
 
+import cloud_object_store
+
 ### System
 import sys
 import os
