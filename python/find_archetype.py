@@ -286,7 +286,7 @@ class WatsonDocumentArchetypes:
     def __init__(self, PATH, NLU, 
                  train_test = False,
                  random_state = None,
-                 use_cloud_store = USE_CLOUD_STORE):
+                 use_cloud_store = False):
         
         self.PATH         = PATH
         self.NLU          = NLU
