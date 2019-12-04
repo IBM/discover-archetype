@@ -8,8 +8,6 @@
 ### IMPORT MODULES
 ##################
 
-import cloud_object_store
-
 ### System
 import sys
 import os
@@ -284,6 +282,7 @@ class WatsonDocumentArchetypes:
     '''
     from ibm_watson import NaturalLanguageUnderstandingV1 as NaLaUn
     from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions,ConceptsOptions,EntitiesOptions,KeywordsOptions,RelationsOptions,SyntaxOptions
+    import cloud_object_store
     
     def __init__(self, PATH, NLU, 
                  train_test = False,
@@ -303,8 +302,14 @@ class WatsonDocumentArchetypes:
         self.nlu_model  = NLUV1(version=NLU['version'], authenticator=authenticator)
         self.nlu_model.set_service_url(NLU['apiurl'])
         if self.use_cloud_store:
-            self.cos_dictations=cloud_object_store.CloudObjectStore(DICTATION_BUCKET, COS_DICTATION_APIKEY, COS_DICTATION_CRN, COS_DICTATION_ENDPOINT)
-            self.cos_nlu=cloud_object_store.CloudObjectStore(NLU_BUCKET, COS_NLU_APIKEY, COS_NLU_CRN, COS_NLU_ENDPOINT)
+            self.cos_dictations=cloud_object_store.CloudObjectStore(PATH['DICTATION_BUCKET'], 
+                                                                    PATH['COS_DICTATION_APIKEY'], 
+                                                                    PATH['COS_DICTATION_CRN'], 
+                                                                    PATH['COS_DICTATION_ENDPOINT'])
+            self.cos_nlu=cloud_object_store.CloudObjectStore(PATH['NLU_BUCKET', 
+                                                            PATH['COS_NLU_APIKEY'], 
+                                                            PATH['COS_NLU_CRN'], 
+                                                            PATH['COS_NLU_ENDPOINT'])
         
             
             # Initiate X_matrix dictionaries
