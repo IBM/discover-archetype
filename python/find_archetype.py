@@ -306,7 +306,7 @@ class WatsonDocumentArchetypes:
                                                                     PATH['COS_DICTATION_APIKEY'], 
                                                                     PATH['COS_DICTATION_CRN'], 
                                                                     PATH['COS_DICTATION_ENDPOINT'])
-            self.cos_nlu=cloud_object_store.CloudObjectStore(PATH['NLU_BUCKET', 
+            self.cos_nlu=cloud_object_store.CloudObjectStore(PATH['NLU_BUCKET'], 
                                                             PATH['COS_NLU_APIKEY'], 
                                                             PATH['COS_NLU_CRN'], 
                                                             PATH['COS_NLU_ENDPOINT'])
