@@ -282,7 +282,7 @@ class WatsonDocumentArchetypes:
     '''
     from ibm_watson import NaturalLanguageUnderstandingV1 as NaLaUn
     from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions,ConceptsOptions,EntitiesOptions,KeywordsOptions,RelationsOptions,SyntaxOptions
-    import cloud_object_store
+    from cloud_object_store import CloudObjectStore
     
     def __init__(self, PATH, NLU, 
                  train_test = False,
@@ -302,14 +302,14 @@ class WatsonDocumentArchetypes:
         self.nlu_model  = NLUV1(version=NLU['version'], authenticator=authenticator)
         self.nlu_model.set_service_url(NLU['apiurl'])
         if self.use_cloud_store:
-            self.cos_dictations=cloud_object_store.CloudObjectStore(PATH['DICTATION_BUCKET'], 
-                                                                    PATH['COS_DICTATION_APIKEY'], 
-                                                                    PATH['COS_DICTATION_CRN'], 
-                                                                    PATH['COS_DICTATION_ENDPOINT'])
-            self.cos_nlu=cloud_object_store.CloudObjectStore(PATH['NLU_BUCKET'], 
-                                                            PATH['COS_NLU_APIKEY'], 
-                                                            PATH['COS_NLU_CRN'], 
-                                                            PATH['COS_NLU_ENDPOINT'])
+            self.cos_dictations=CloudObjectStore(PATH['dictation_bucket'], 
+                                                PATH['cos_dictation_apikey'], 
+                                                PATH['cos_dictation_crn'], 
+                                                PATH['cos_dictation_endpoint'])
+            self.cos_nlu=CloudObjectStore(PATH['nlu_bucket'], 
+                                        PATH['cos_nlu_apikey'], 
+                                        PATH['cos_nlu_crn'], 
+                                        PATH['cos_nlu_endpoint'])
         
             
             # Initiate X_matrix dictionaries
