@@ -160,6 +160,12 @@ def plot_archetypes(wda, feature_type):
         sns.heatmap(f)
     return fig
 
+def plot_coordinate(wda, feature_type):
+    # Plot as a coordinate system
+    n_archs = 6
+    f = wda.archetypes(typ=feature_type,n_archs=n_archs).o.applymap(lambda X: X+0.00000000000000001).T
+    sns.clustermap(f.apply(norm_sum).T)
+    
 
 # # MATRIX-FACTORIZATION: DIMENSIONALITY REDUCTION & ARCHETYPING
 
