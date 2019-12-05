@@ -36,7 +36,7 @@ from sklearn.model_selection import train_test_split
 ### NLU
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import NaturalLanguageUnderstandingV1 as NLUV1
-from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions,ConceptsOptions,EntitiesOptions,KeywordsOptions,RelationsOptions,SyntaxOptions
+#from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions,ConceptsOptions,EntitiesOptions,KeywordsOptions,RelationsOptions,SyntaxOptions
 
 
 ### Presentation / apps
@@ -280,14 +280,13 @@ class WatsonDocumentArchetypes:
     
         
     '''
-    from ibm_watson import NaturalLanguageUnderstandingV1 as NaLaUn
-    from ibm_watson.natural_language_understanding_v1 import Features, CategoriesOptions,ConceptsOptions,EntitiesOptions,KeywordsOptions,RelationsOptions,SyntaxOptions
-    from cloud_object_store import CloudObjectStore
     
     def __init__(self, PATH, NLU, 
                  train_test = False,
                  random_state = None,
                  use_cloud_store = False):
+        
+        from cloud_object_store import CloudObjectStore
         
         self.PATH         = PATH
         self.NLU          = NLU
@@ -499,3 +498,4 @@ class WatsonDocumentArchetypes:
     # ANALYZE A TEXT
     def analyze(self,text,typ='entities'):
         pass
+    
