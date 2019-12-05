@@ -59,7 +59,7 @@ def plot_archetypes(wda, feature_type):
     threshold = 0.1
     for i in range(n_archs):
         tot = wda.archetypes(typ=feature_type, n_archs=n_archs).f.T.apply(find_archetype.scale)[i].sum()
-        f =   wda.display_archetype(typ=feature_type, n_archs=n_archs, arch_nr=i, threshold=threshold, norm = scale)
+        f =   wda.display_archetype(typ=feature_type, n_archs=n_archs, arch_nr=i, threshold=threshold, norm = find_archetype.scale)
         ax = fig.add_subplot(2, 3, i+1)
         ax.title.set_text('Key: Archetype '+str(i)+'\n'+str(int(100*f[i].sum()/tot))+'% of volume displayed')
         sns.heatmap(f)
