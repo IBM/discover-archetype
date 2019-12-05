@@ -166,7 +166,13 @@ def plot_coordinate(wda, feature_type):
     f = wda.archetypes(typ=feature_type,n_archs=n_archs).o.applymap(lambda X: X+0.00000000000000001).T
     sns.clustermap(f.apply(norm_sum).T)
     
-def plot_similarity(wda, ):
+def plot_similarity(similarities, title):
+    sns.set(font_scale = 2)
+    similarities.columns = ['similarity %']
+    plt.figure(figsize = (2,6))
+    sns.heatmap(similarities,annot=True)
+    plt.ylabel('Archetype')
+    plt.title(title)
 
 # # MATRIX-FACTORIZATION: DIMENSIONALITY REDUCTION & ARCHETYPING
 
