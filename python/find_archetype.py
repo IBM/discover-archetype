@@ -144,6 +144,22 @@ def ls(search,name_only = False,cos=None):
     result       = all_names[mask]
     return result
 
+### plotting function
+
+def plot_archetypes(wda, feature_type):
+    # Create a plot for the number of archetypes desired 
+    fig = plt.figure(figsize=(14, 12))
+    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+    n_archs   = 6
+    threshold = 0.1
+    for i in range(n_archs):
+        tot = wda.archetypes(typ=feature_type, n_archs=n_archs).f.T.apply(scale)[i].sum()
+        f =   wda.display_archetype(typ=feature_type, n_archs=n_archs, arch_nr=i, threshold=threshold, norm = scale)
+        ax = fig.add_subplot(2, 3, i+1)
+        ax.title.set_text('Key: Archetype '+str(i)+'\n'+str(int(100*f[i].sum()/tot))+'% of volume displayed')
+        sns.heatmap(f)
+    return fig
+
 
 # # MATRIX-FACTORIZATION: DIMENSIONALITY REDUCTION & ARCHETYPING
 
