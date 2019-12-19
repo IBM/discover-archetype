@@ -93,19 +93,17 @@ discover-archetype/notebook/WATSON_Document_Archetypes_Analysis_Showcase.ipynb
 Go to the [ezDI](https://www.ezdi.com/open-datasets/) web site and download both the medical dictation text files.
 The downloaded files will be contained in zip files.
 
-Create a `Documents` subdirectory and then extract the downloaded zip files into their respective locations.
+Create a `notebook/Documents` subdirectory and then extract the downloaded zip files into their respective locations.
 
-The dictation files stored in the `Documents` directory will be in **rtf** format, and need to be converted to plain
+The dictation files stored in the `notebook/Documents` directory will be in **rtf** format, and need to be converted to plain
 text. Use the following bash script to convert them all to **txt** files.
 
-> Note: Run the following script with Python 2.7.
+> Note: Run the following script with Python 3.
 
 ```bash
-pip install pyth
-for name in `ls Documents/*.rtf`;
-do
-  python python/convert_rtf.py $name
-done
+pip install striprtf
+cd notebook/Documents
+python ../python/convert_rtf.py 
 ```
 
 Upload the dictation files in text format to the IBM Cloud Object Store bucket for dictation.
