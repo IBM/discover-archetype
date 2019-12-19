@@ -4,7 +4,7 @@
 # Output is a plain text file with the same name and the .txt extension
 # This program uses the package pyth
 # Install by:
-#   pip install pyth 
+#   pip install pyth
 ###########################################################################
 
 from pyth.plugins.rtf15.reader import Rtf15Reader
@@ -22,4 +22,3 @@ if __name__ == '__main__':
         output_file.write(PlaintextWriter.write(doc).getvalue())
         output_file.close()
         input_file.close()
-
