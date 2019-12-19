@@ -117,3 +117,6 @@ Then use the console to execute each cell in the notebook.
 
 ## 5. Run the Web UI
 Follow the instructions in the [README](https://github.com/IBM/discover-archetype/blob/master/web-app/README.md)
+
+If the web service is deployed on a server with public IP, the UI can be accessed on a mobile device.
+
