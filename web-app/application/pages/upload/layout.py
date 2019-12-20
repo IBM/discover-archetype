@@ -55,18 +55,18 @@ def layout():
                             [
                                 dbc.FormGroup([
                                     dbc.Input(id='delete-input',
-                                              type="text",
-                                              placeholder="Enter Corpus ID"),
-                                ], className="mr-3"),
-                                dbc.Button("Delete",
-                                           color="danger",
+                                              type='text',
+                                              placeholder='Enter Corpus ID'),
+                                ], className='mr-3 mb-0'),
+                                dbc.Button('Delete',
+                                           color='danger',
                                            id='delete-button'),
                             ],
                             inline=True,
                         ),
                         html.Div(id='delete-output',
                                  children='')
-                    ], width=4)
+                    ], width=12)
                 )
             ], style={'background': '#ececec', 'padding': '10px'})
         ], style={'margin-top': '50px'}),

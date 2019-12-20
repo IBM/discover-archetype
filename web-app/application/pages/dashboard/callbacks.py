@@ -24,7 +24,6 @@ def register_callbacks(dash_app):
          Input('corpus-dropdown', 'value')]
     )
     def arch_heatmap_variables(typ, n_archs, threshold, corpus_id):
-        print('--- In Heatmap Dash callback ---')
         df_dic = get_corpus_results(corpus_id)
 
         def f(i):
@@ -35,8 +34,15 @@ def register_callbacks(dash_app):
             ).sort_values(by=i)
 
         cols = 2
-        maxrows = int(1 + n_archs//cols)
-        fig = make_subplots(rows=maxrows, cols=cols, horizontal_spacing=.2)
+        maxrows = int(-(-n_archs//cols))
+        fig = make_subplots(
+            rows=maxrows,
+            cols=cols,
+            horizontal_spacing=.2,
+            subplot_titles=[
+                'Archetype {}'.format(i) for i in range(n_archs)
+            ]
+        )
         for i in range(n_archs):
             res = f(i)
             fig.add_trace(
@@ -56,7 +62,6 @@ def register_callbacks(dash_app):
             )
         fig.update_layout(
             height=400*maxrows,
-            width=1100,
             title_text="Discovered Archetypes"
         )
         return fig
