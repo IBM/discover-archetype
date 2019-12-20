@@ -18,7 +18,6 @@ def layout():
             html.Div([
                 html.H1(
                     children='Archetype Clustering',
-                    className="nine columns",
                     style={
                         'marginTop': 20,
                         'marginRight': 20
@@ -67,7 +66,7 @@ def layout():
                             value=(corpus_options[0]['value']
                                    if len(corpus_options) else None)
                         )
-                    ], width=4)
+                    ], lg=4, xs=12)
                 ], className='mb-4'),
                 dbc.Row([
                     dbc.Col([
@@ -81,7 +80,7 @@ def layout():
                             ],
                             value='concepts',
                         )
-                    ]),
+                    ], xs=12, md=4),
                     dbc.Col([
                         html.Label('#Archetypes',
                                    style={'fontWeight': 'bold'}),
@@ -92,7 +91,7 @@ def layout():
                             value=6,
                             multi=False
                         )
-                    ]),
+                    ], xs=12, md=4),
                     dbc.Col([
                         html.Label('Cut at', style={'fontWeight': 'bold'}),
                         dcc.Dropdown(
@@ -102,7 +101,7 @@ def layout():
                             value=0.1,
                             multi=False
                         )
-                    ])
+                    ], xs=12, md=4)
                 ])
             ]),
             html.Div([

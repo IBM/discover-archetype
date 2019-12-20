@@ -1,0 +1,17 @@
+#output-similarity-graph {
+  width: 40%;
+}
+
+@media only screen and (max-width: 700px) {
+  #output-similarity-graph {
+    width: 100%;
+  }
+
+  .colorbar {
+    display: none;
+  }
+
+  .yaxislayer-above {
+    display: none;
+  }
+}

@@ -40,13 +40,13 @@ def register_callbacks(dash_app):
         fig['layout']['yaxis']['title'] = 'Archetype'
 
         cols = 2
-        maxrows = int(1 + num_archetype//cols)
+        maxrows = int(-(-num_archetype//cols))
         fig2 = make_subplots(
             rows=maxrows,
             cols=cols,
             horizontal_spacing=.2,
             subplot_titles=[
-                'Archetype {} vs DOC'.format(i) for i in range(num_archetype)
+                'Arch {} vs DOC'.format(i) for i in range(num_archetype)
             ]
         )
         for i in range(num_archetype):

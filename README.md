@@ -103,7 +103,7 @@ text. Use the following bash script to convert them all to **txt** files.
 ```bash
 pip install striprtf
 cd notebook/Documents
-python ../python/convert_rtf.py 
+python ../python/convert_rtf.py
 ```
 
 Upload the dictation files in text format to the IBM Cloud Object Store bucket for dictation.
@@ -116,7 +116,14 @@ credentials, endpoints, and resource IDs for the 3 IBM Cloud services.  Use the 
 Then use the console to execute each cell in the notebook.  
 
 ## 5. Run the Web UI
-Follow the instructions in the [README](https://github.com/IBM/discover-archetype/blob/master/web-app/README.md)
+
+This web app showcases the archetype discovery process. Users can:
+  1. Upload a corpus (`zip` file containing `txt` files) which will be processed by Watson NLU.
+  2. Compute the archetypes of a corpus and analyze them.
+  3. Match a new document with the archetypes and see the relevant terms.
+
+Follow the instructions in the [README](https://github.com/IBM/discover-archetype/blob/master/web-app/README.md).
 
 If the web service is deployed on a server with public IP, the UI can be accessed on a mobile device.
 
+![archetypes UI](doc/source/images/ui-arch-screenshot.png)

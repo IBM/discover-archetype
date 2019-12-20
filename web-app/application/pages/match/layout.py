@@ -26,7 +26,7 @@ def layout():
                     value=(corpus_options[0]['value']
                            if len(corpus_options) else None)
                 )
-            ], width=4)
+            ], lg=4, xs=12)
         ], className='mb-4'),
         dbc.Row([
             dbc.Col([
@@ -41,7 +41,7 @@ def layout():
                     ],
                     value='concepts',
                 )
-            ]),
+            ], xs=12, md=4),
             dbc.Col([
                 html.Label('# of Archetypes',
                            style={'fontWeight': 'bold'}),
@@ -52,7 +52,7 @@ def layout():
                     value=6,
                     multi=False
                 )
-            ]),
+            ], xs=12, md=4),
         ], className='mb-4'),
         html.Label('Document Text', style={'fontWeight': 'bold'}),
         dbc.Textarea(className='mb-3',
@@ -66,13 +66,14 @@ def layout():
             dcc.Graph(
                 id='output-similarity-graph',
                 style={'margin-right': 'auto',
-                       'margin-left': 'auto',
-                       'width': '50%'}
+                       'margin-left': 'auto'}
             )
         ]),
         html.Div([
             dcc.Graph(
-                id='output-archetypes-graph'
+                id='output-archetypes-graph',
+                style={'margin-right': 'auto',
+                       'margin-left': 'auto'}
             )
         ])
     ], className='mt-4 mb-4')
