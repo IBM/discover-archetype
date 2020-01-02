@@ -7,6 +7,7 @@ import dash_html_components as html
 def layout():
     return html.Div([
         html.H3('Upload Corpus for Archetype Discovery'),
+        html.P('Corpus must be a zip file containing only txt files.'),
         dcc.Upload(
             id='upload-data',
             children=html.Div([
