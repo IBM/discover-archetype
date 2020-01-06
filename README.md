@@ -48,7 +48,7 @@ When the reader has completed this code pattern, they will understand how to:
 
 # Watch the Video
 
-Coming soon.
+[Video](https://youtu.be/M-QVR_Q_ylk)
 
 # Steps
 
