@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/IBM/discover-archetype.svg?branch=master)](https://travis-ci.org/IBM/discover-archetype)
 
 # Discover the archetypes in your system of records
 
