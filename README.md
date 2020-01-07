@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/discover-archetype.svg?branch=master)](https://travis-ci.org/IBM/discover-archetype)
+[![Build Status](https://api.travis-ci.com/IBM/discover-archetype.svg?branch=master)](https://travis-ci.com/IBM/discover-archetype)
 
 # Discover the archetypes in your system of records
 
@@ -49,7 +49,7 @@ When the reader has completed this code pattern, they will understand how to:
 
 # Watch the Video
 
-[Video](https://youtu.be/M-QVR_Q_ylk)
+[![](https://img.youtube.com/vi/M-QVR_Q_ylk/2.jpg)](https://youtu.be/M-QVR_Q_ylk)
 
 # Steps
 
