@@ -17,8 +17,8 @@ $ python -m venv myvenv
 
 # Now source the virtual environment. Use one of the two commands depending on your OS.
 
-$ source mytestenv/bin/activate  # Mac or Linux
-$ ./mytestenv/Scripts/activate   # Windows PowerShell
+$ source myvenv/bin/activate  # Mac or Linux
+$ ./myvenv/Scripts/activate   # Windows PowerShell
 ```
 
 Next, in the project directory, run:
